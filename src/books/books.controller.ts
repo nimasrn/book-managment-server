@@ -1,5 +1,6 @@
 import { string } from '@hapi/joi';
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query, Req, UnprocessableEntityException, UseGuards, UsePipes } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import { stringify } from 'querystring';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { Book } from './book.entity';
@@ -91,35 +92,55 @@ export class BooksController {
   }
 
 
-  @Get(':id/amazon')
-  async amazon(@Param('id') id: string) {
-    const book = await this.booksService.find(id);
-    const browser = await puppeteer.launch({ headless: false });
-    const page = await browser.newPage();
-    await page.goto(`https://www.amazon.com/s?k=${book.ISBN}&ref=nb_sb_noss`, { waitUntil: 'networkidle2' });
-    await Promise.all([
-      page.waitForNavigation(),
-      page.click('.a-link-normal .a-text-normal'),
-    ]);
-    const rates = await page.$$eval('.a-icon-alt', options => options.map(option => option.textContent));
-    // let details = await page.$$eval('li', options => options.map(option => option.textContent));
-    // details = details.filter(element => {
-    //   return element.search('ASIN') >= 0
-    // })
-    // let ASIN = details[0];
-    // console.log(`: --------------------------`);
-    // console.log(`amazon -> details`, ASIN.split(':'));
-    // console.log(`: --------------------------`);
-    // ASIN = ASIN.split('n');
-    // await Promise.all([
-    //   page.waitForNavigation(),
-    //   page.click('#a-popover-trigger #a-declarative'),
-    // ]);
-    // const reviews = await page.$$eval('.a-size-base a-link-emphasis', options => options.map(option => option.textContent));
+  // @Get(':id/amazon')
+  // async amazon(@Param('id') id: string) {
+  //   const book = await this.booksService.find(id);
+  //   const browser = await puppeteer.launch({ headless: false });
+  //   const page = await browser.newPage();
+  //   await page.goto(`https://www.amazon.com/s?k=${book.ISBN}&ref=nb_sb_noss`, { waitUntil: 'networkidle2' });
+  //   await Promise.all([
+  //     page.waitForNavigation(),
+  //     page.click('.a-link-normal .a-text-normal'),
+  //   ]);
+  //   const rates = await page.$$eval('.a-icon-alt', options => options.map(option => option.textContent));
+  //   // let details = await page.$$eval('li', options => options.map(option => option.textContent));
+  //   // details = details.filter(element => {
+  //   //   return element.search('ASIN') >= 0
+  //   // })
+  //   // let ASIN = details[0];
+  //   // console.log(`: --------------------------`);
+  //   // console.log(`amazon -> details`, ASIN.split(':'));
+  //   // console.log(`: --------------------------`);
+  //   // ASIN = ASIN.split('n');
+  //   // await Promise.all([
+  //   //   page.waitForNavigation(),
+  //   //   page.click('#a-popover-trigger #a-declarative'),
+  //   // ]);
+  //   // const reviews = await page.$$eval('.a-size-base a-link-emphasis', options => options.map(option => option.textContent));
 
 
-    await browser.close();
-    return rates[0];
+  //   await browser.close();
+  //   return rates[0];
 
+  // }
+
+  @Cron('* 30 23 * * *')
+  async handleCron() {
+    const books = await this.booksService.findAllWithOutPagination();
+    for (const book of books) {
+      const browser = await puppeteer.launch();
+      const page = await browser.newPage();
+      await page.goto(`https://www.amazon.com/s?k=${book.ISBN}&ref=nb_sb_noss`, { waitUntil: 'networkidle2' });
+      await Promise.all([
+        page.waitForNavigation(),
+        page.click('.a-link-normal .a-text-normal'),
+      ]);
+      const rates = await page.$$eval('.a-icon-alt', options => options.map(option => option.textContent));
+      await browser.close();
+      if (rates[0]) {
+        book.amazonRating = rates[0];
+        await this.booksService.updatebyId(book.id, book)
+      }
+    }
   }
 }

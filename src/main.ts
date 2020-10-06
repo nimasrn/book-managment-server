@@ -9,6 +9,13 @@ import { ValidationPipe } from '@nestjs/common';
 import * as rateLimit from 'express-rate-limit';
 
 async function bootstrap() {
+  console.log('DATABASE_HOST:', process.env.DATABASE_HOST);
+  console.log('DATABASE_PORT:', process.env.DATABASE_PORT);
+  console.log('DATABASE_USER:', process.env.DATABASE_USER);
+  console.log('DATABASE_PASSWORD:', process.env.DATABASE_PASSWORD);
+  console.log('DATABASE_NAME:', process.env.DATABASE_NAME);
+  console.log('SECRET_KEY:', process.env.SECRET_KEY);
+
   const app = await NestFactory.create(AppModule);
   app.use(logger);
   app.use(helmet());

@@ -21,6 +21,9 @@ export class Book {
   @Column({ type: "json", nullable: true })
   cover: string;
 
+  @Column({ nullable: true })
+  amazonRating: string;
+
   @ManyToMany(type => Category, { cascade: true })
   @JoinTable()
   categories: Category[];
