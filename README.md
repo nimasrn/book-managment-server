@@ -27,6 +27,10 @@
 ## Description
 [demo] https://book-management-server.herokuapp.com
 
+- Amazon rating updated everyday at 11:30 pm
+- you can update book cover and authors manually
+
+
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 database uml: 
