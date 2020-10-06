@@ -63,7 +63,8 @@ export class BooksService {
       {
         where: { title: Like('%' + title + '%') },
         take,
-        skip
+        skip,
+        relations: ["categories"]
       }
     );
     return {
