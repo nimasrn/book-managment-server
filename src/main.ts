@@ -28,6 +28,6 @@ async function bootstrap() {
       "Too many requests from this IP, please try again later"
   }));
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
