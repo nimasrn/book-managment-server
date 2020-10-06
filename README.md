@@ -29,8 +29,41 @@
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 database uml: 
+
 <img src="https://user-images.githubusercontent.com/36764654/95237649-58acff00-0815-11eb-8fef-b08a8b90779c.png" width="320" />
 
+
+## Modules
+```bash
+  /books
+  GET: /books?page=&&title 
+  POST: /books
+  PUT: /books
+  GET: /books/:id
+  DELETE: /books
+  GET: books/update/:id (trigger update book authors and cover)
+  GET: /books/:id/amazon (trigger update book rating)
+  POST: /books/:id/categories
+  DELETE: /books/:id/categories
+  DELETE: /books/:id/categories/:categoryId
+  
+```
+```bash
+  /categories
+  POST: /categories
+  GET: /categories
+  PUT: /categories/:id
+  DELETE: /categories/:id
+```
+```bash
+  /auth
+  POST: /auth/login
+```
+```bash
+  /users
+  POST: /users
+  GET: /profile
+```
 
 ## Installation
 
