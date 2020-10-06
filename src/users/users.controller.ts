@@ -9,7 +9,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.usersService.create(createUserDto);
   }
