@@ -6,8 +6,7 @@ import { Book } from './book.entity';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create.dto';
 import { UpdateBookDto } from './dto/update.dto';
-import { Builder, By, Key, until } from 'selenium-webdriver';
-import chrome from 'selenium-webdriver/chrome';
+import * as puppeteer from 'puppeteer';
 
 @Controller('books')
 export class BooksController {
@@ -94,17 +93,33 @@ export class BooksController {
 
   @Get(':id/amazon')
   async amazon(@Param('id') id: string) {
-    const book = this.booksService.find(id);
-    const driver = await new Builder().forBrowser('chrome').build();
-    try {
-      await driver.get('https://www.amazon.com/s?k=9780132350884&ref=nb_sb_noss');
-      const res = await driver.findElement(By.class('a-link-normal a-text-normal')).sendKeys('webdriver', Key.RETURN);
-      console.log(`: ------------------`);
-      console.log(`amazon -> res`, res);
-      console.log(`: ------------------`);
-      // await driver.wait(until.titleIs('webdriver - Google Search'), 1000);
-    } finally {
-      await driver.quit();
-    }
+    const book = await this.booksService.find(id);
+    const browser = await puppeteer.launch({ headless: false });
+    const page = await browser.newPage();
+    await page.goto(`https://www.amazon.com/s?k=${book.ISBN}&ref=nb_sb_noss`, { waitUntil: 'networkidle2' });
+    await Promise.all([
+      page.waitForNavigation(),
+      page.click('.a-link-normal .a-text-normal'),
+    ]);
+    const rates = await page.$$eval('.a-icon-alt', options => options.map(option => option.textContent));
+    // let details = await page.$$eval('li', options => options.map(option => option.textContent));
+    // details = details.filter(element => {
+    //   return element.search('ASIN') >= 0
+    // })
+    // let ASIN = details[0];
+    // console.log(`: --------------------------`);
+    // console.log(`amazon -> details`, ASIN.split(':'));
+    // console.log(`: --------------------------`);
+    // ASIN = ASIN.split('n');
+    // await Promise.all([
+    //   page.waitForNavigation(),
+    //   page.click('#a-popover-trigger #a-declarative'),
+    // ]);
+    // const reviews = await page.$$eval('.a-size-base a-link-emphasis', options => options.map(option => option.textContent));
+
+
+    await browser.close();
+    return rates[0];
+
   }
 }

@@ -6,9 +6,12 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm/dist/typeorm.module';
 import { Connection } from 'typeorm';
 import { CategoryModule } from './categories/category.module';
+import { ScheduleModule } from '@nestjs/schedule';
+
 @Module({
   imports: [
     TypeOrmModule.forRoot(),
+    ScheduleModule.forRoot(),
     BookModule,
     AuthModule,
     UsersModule,
