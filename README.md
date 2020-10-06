@@ -28,6 +28,10 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+database uml: 
+<img src="https://user-images.githubusercontent.com/36764654/95237649-58acff00-0815-11eb-8fef-b08a8b90779c.png" width="320" />
+
+
 ## Installation
 
 ```bash
