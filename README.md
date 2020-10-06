@@ -25,7 +25,8 @@
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
 ## Description
-[demo] https://book-management-server.herokuapp.com/
+[demo] https://book-management-server.herokuapp.com
+
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 database uml: 
