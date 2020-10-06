@@ -1,4 +1,5 @@
-import { Column, Entity, IsNull, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { Book } from 'src/books/book.entity';
+import { Column, Entity, IsNull, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 @Entity()
 @Unique(["name"])
@@ -9,4 +10,5 @@ export class Category {
 
   @Column()
   name: string;
+
 }

@@ -6,7 +6,6 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm/dist/typeorm.module';
 import { Connection } from 'typeorm';
 import { CategoryModule } from './categories/category.module';
-import { BookCategoryModule } from './bookCategories/bookCategory.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot(),
@@ -14,7 +13,6 @@ import { BookCategoryModule } from './bookCategories/bookCategory.module';
     AuthModule,
     UsersModule,
     CategoryModule,
-    BookCategoryModule
   ],
   controllers: [
     // AppController

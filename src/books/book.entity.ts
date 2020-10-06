@@ -1,6 +1,6 @@
-import { BookCategory } from 'src/bookCategories/bookCategory.entity';
+import { array } from '@hapi/joi';
 import { Category } from 'src/categories/category.entity';
-import { Column, Entity, IsNull, ManyToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { Column, Entity, IsNull, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 @Entity()
 @Unique(["ISBN"])
@@ -19,10 +19,10 @@ export class Book {
   authors: any;
 
   @Column({ type: "json", nullable: true })
-  // eslint-disable-next-line @typescript-eslint/ban-types
   cover: string;
 
-  @ManyToMany(type => Category, BookCategory => BookCategory)
+  @ManyToMany(type => Category, { cascade: true })
+  @JoinTable()
   categories: Category[];
 
 }

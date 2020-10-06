@@ -11,7 +11,6 @@ export class UpdateBookDto {
   authors: string[];
 
   @IsObject()
-  // eslint-disable-next-line @typescript-eslint/ban-types
   cover: string;
 
 }

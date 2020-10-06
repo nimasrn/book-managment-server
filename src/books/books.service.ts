@@ -1,3 +1,4 @@
+import { bool } from '@hapi/joi';
 import { HttpService, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNotEmpty } from 'class-validator';
@@ -14,11 +15,20 @@ export class BooksService {
     private readonly bookRepository: Repository<Book>,
     private httpService: HttpService
   ) { }
-  create({ title, ISBN }): Promise<Book> {
+  create({ title, ISBN, categories }): Promise<Book> {
     const book = new Book();
     book.title = title;
     book.ISBN = ISBN;
+    book.categories = categories;
     return this.bookRepository.save(book);
+  }
+
+  find(id): Promise<Book> {
+    return this.bookRepository.findOne({ id });
+  }
+
+  findwithCategoeis(id): Promise<Book> {
+    return this.bookRepository.findOne({ id }, { relations: ["categories"] });
   }
 
   findOneByISBN(ISBN): Promise<Book> {
@@ -32,7 +42,8 @@ export class BooksService {
     const [data, total] = await this.bookRepository.findAndCount(
       {
         take,
-        skip
+        skip,
+        relations: ["categories"]
       }
     );
     return {
@@ -66,11 +77,26 @@ export class BooksService {
   //   return this.httpService.get(`https://openlibrary.org/${authorUrl}.json`);
   // }
 
-  updatebyId(id: any, book: UpdateBookDto): Promise<any> {
-    return this.bookRepository.update(id, book);
+  updatebyId(id: number, book: UpdateBookDto): Promise<any> {
+    return this.bookRepository.update({ id: id }, book);
+  }
+
+  async addCategory(id: number, category): Promise<any> {
+    return await this.bookRepository.createQueryBuilder().relation(Book, 'categories').of(id).add(category);
+  }
+
+  async removeCategoryById(id: number, categoryId): Promise<any> {
+    return await this.bookRepository.createQueryBuilder().relation(Book, 'categories').of(id).remove([categoryId]);
+  }
+
+  async removeCategories(id: number): Promise<any> {
+    const book = this.findwithCategoeis(id);
+    return await this.bookRepository.createQueryBuilder().relation(Book, 'categories').of(id).remove((await book).categories);
   }
 
   delete(id: number): Promise<any> {
     return this.bookRepository.delete(id);
   }
+
+
 }
