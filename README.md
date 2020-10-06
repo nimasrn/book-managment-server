@@ -79,7 +79,7 @@ DATABASE_PASSWORD=
 DATABASE_NAME=test
 SECRET_KEY=developementsecret
 ```
-# Note: env variables can set to process.env to ignore the default env
+$ Note: env variables can set to process.env to ignore the default env
 
 ## Running the app
 
