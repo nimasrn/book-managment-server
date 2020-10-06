@@ -70,6 +70,16 @@ database uml:
 ```bash
 $ npm install
 ```
+default env: 
+```bash
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_USER=
+DATABASE_PASSWORD=
+DATABASE_NAME=test
+SECRET_KEY=developementsecret
+```
+# Note: env variables can set to process.env to ignore the default env
 
 ## Running the app
 
