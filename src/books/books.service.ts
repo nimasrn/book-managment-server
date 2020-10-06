@@ -51,6 +51,9 @@ export class BooksService {
       count: total
     }
   }
+  async findAllWithOutPagination(): Promise<any> {
+    return await this.bookRepository.find();
+  }
 
   async findAllWithSearch({ page, title = null }): Promise<any> {
     const take = 10
