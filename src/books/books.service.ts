@@ -1,7 +1,8 @@
 import { HttpService, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { IsNotEmpty } from 'class-validator';
 import { Observable } from 'rxjs';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Book } from './book.entity';
 import { CreateBookDto } from './dto/create.dto';
 import { UpdateBookDto } from './dto/update.dto';
@@ -24,8 +25,37 @@ export class BooksService {
     return this.bookRepository.findOne({ ISBN: ISBN });
   }
 
-  findAll(): Promise<Book[]> {
-    return this.bookRepository.find();
+  async findAll({ page }): Promise<any> {
+    const take = 10
+    const skip = page * 10;
+
+    const [data, total] = await this.bookRepository.findAndCount(
+      {
+        take,
+        skip
+      }
+    );
+    return {
+      data,
+      count: total
+    }
+  }
+
+  async findAllWithSearch({ page, title = null }): Promise<any> {
+    const take = 10
+    const skip = page * 10;
+
+    const [data, total] = await this.bookRepository.findAndCount(
+      {
+        where: { title: Like('%' + title + '%') },
+        take,
+        skip
+      }
+    );
+    return {
+      data,
+      count: total
+    }
   }
 
   getDetailsByISBN(ISBN: string): Observable<any> {

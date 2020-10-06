@@ -1,5 +1,5 @@
 import { string } from '@hapi/joi';
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Req, UnprocessableEntityException, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query, Req, UnprocessableEntityException, UseGuards, UsePipes } from '@nestjs/common';
 import { stringify } from 'querystring';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { Book } from './book.entity';
@@ -29,10 +29,13 @@ export class BooksController {
     return createdBook;
   }
 
-  @Get()
-  async findAll(): Promise<Book[]> {
-    const books = await this.booksService.findAll();
-    return books;
+  @Get('')
+  async findAll(@Query() params): Promise<Book[]> {
+    if (params.title) {
+      return await this.booksService.findAllWithSearch(params);
+    } else {
+      return await this.booksService.findAll(params);
+    }
   }
 
   @Put(':id')
