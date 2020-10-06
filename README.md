@@ -29,7 +29,7 @@
 
 - Amazon rating updated everyday at 11:30 pm
 - you can update book cover and authors manually
-
+- we user postgres as database with typorm
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
